@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="说一下spring。Spring是一个轻量级的控制反转(IoC)和面向切面(AOP)的容器框架。IOC就是本来在类内部控制的对象，反转到类外部进行创建后注入，不再由类本身进行控制，DI是依赖注入。 说一下分布式。不同于集群和负载均衡，功能上可能被拆分成多个应用，分别提供不同的功能，组成一个分布式系统对外提供服务，其实是一种比较模糊的概念。分布式框架有dubbo。 Springbean是怎么创建的？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java面试整理">
+<meta property="og:url" content="http://blog.bobexchen.com/2018/09/16/180916Java%E9%9D%A2%E8%AF%95%E6%95%B4%E7%90%86/index.html">
+<meta property="og:site_name" content="Bobex">
+<meta property="og:description" content="说一下spring。Spring是一个轻量级的控制反转(IoC)和面向切面(AOP)的容器框架。IOC就是本来在类内部控制的对象，反转到类外部进行创建后注入，不再由类本身进行控制，DI是依赖注入。 说一下分布式。不同于集群和负载均衡，功能上可能被拆分成多个应用，分别提供不同的功能，组成一个分布式系统对外提供服务，其实是一种比较模糊的概念。分布式框架有dubbo。 Springbean是怎么创建的？">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-09-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2019-12-30T17:23:02.864Z">
+<meta property="article:author" content="Bobex">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+  <link rel="canonical" href="http://blog.bobexchen.com/2018/09/16/180916Java面试整理/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Java面试整理 | Bobex</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bobex</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />留言</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.bobexchen.com/2018/09/16/180916Java%E9%9D%A2%E8%AF%95%E6%95%B4%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bobex">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bobex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java面试整理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-16T00:00:00+08:00">2018-09-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-12-31 01:23:02" itemprop="dateModified" datetime="2019-12-31T01:23:02+08:00">2019-12-31</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/09/16/180916Java%E9%9D%A2%E8%AF%95%E6%95%B4%E7%90%86/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2018/09/16/180916Java%E9%9D%A2%E8%AF%95%E6%95%B4%E7%90%86/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="说一下spring。"><a href="#说一下spring。" class="headerlink" title="说一下spring。"></a>说一下spring。</h2><p>Spring是一个轻量级的控制反转(IoC)和面向切面(AOP)的容器框架。IOC就是本来在类内部控制的对象，反转到类外部进行创建后注入，不再由类本身进行控制，DI是依赖注入。</p>
+<h2 id="说一下分布式。"><a href="#说一下分布式。" class="headerlink" title="说一下分布式。"></a>说一下分布式。</h2><p>不同于集群和负载均衡，功能上可能被拆分成多个应用，分别提供不同的功能，组成一个分布式系统对外提供服务，其实是一种比较模糊的概念。<br>分布式框架有dubbo。</p>
+<h2 id="Springbean是怎么创建的？"><a href="#Springbean是怎么创建的？" class="headerlink" title="Springbean是怎么创建的？"></a>Springbean是怎么创建的？</h2><p>Spring支持如下三种方式创建Bean：<br>1、调用构造器创建Bean<br>2、调用静态工厂方法创建Bean<br>3、调用实例工厂方法创建Bean。<br>详情参考<a href="https://blog.csdn.net/magicianjun/article/details/78737840" target="_blank" rel="noopener">spring管理bean的三种创建方式</a></p>
+<h2 id="springMVC的执行流程是什么样的？"><a href="#springMVC的执行流程是什么样的？" class="headerlink" title="springMVC的执行流程是什么样的？"></a>springMVC的执行流程是什么样的？</h2><p>springMVC是由dispatchservlet为核心的分层控制框架。首先客户端发出一个请求web服务器解析请求url并去匹配dispatchservlet的映射url，如果匹配上就将这个请求放入到dispatchservlet，dispatchservlet根据mapping映射配置去寻找相对应的handel，然后把处理权交给找到的handel，handel封装了处理业务逻辑的代码，当handel处理完后会返回一个逻辑视图modelandview给dispatchservlet，此时的modelandview是一个逻辑视图不是一个正式视图，所以dispatchservlet会通过viewresource视图资源去解析modelandview，然后将解析后的参数放到view中返回到客户端并展现。</p>
+<a id="more"></a>
+<h2 id="说一下Ajax。"><a href="#说一下Ajax。" class="headerlink" title="说一下Ajax。"></a>说一下Ajax。</h2><p>Ajax为异步请求，即局部刷新技术，在传统的页面中，用户需要点击按钮或者事件触发请求，到刷新页面，而异步技术为不需要点击即可触发事件，这样使得用户体验感增强，比如商城购物车的异步加载，当你点击商品时无需请求后台而直接动态修改参数。</p>
+<h2 id="说一下AOP"><a href="#说一下AOP" class="headerlink" title="说一下AOP"></a>说一下AOP</h2><p>AOP：面向切面编程，主要是管理系统层的业务，比如日志，权限，事物等。AOP是将封装好的对象剖开，找出其中对多个对象产生影响的公共行为，并将其封装为一个可重用的模块，这个模块被命名为切面（aspect），切面将那些与业务逻辑无关，却被业务模块共同调用的逻辑提取并封装起来，减少了系统中的重复代码，降低了模块间的耦合度，同时提高了系统的可维护性。</p>
+<h2 id="事物的理解"><a href="#事物的理解" class="headerlink" title="事物的理解"></a>事物的理解</h2><h3 id="事务是逻辑上的一组操作，要么都执行，要么都不执行-具有ACID，4个特性（原子性）"><a href="#事务是逻辑上的一组操作，要么都执行，要么都不执行-具有ACID，4个特性（原子性）" class="headerlink" title="事务是逻辑上的一组操作，要么都执行，要么都不执行.具有ACID，4个特性（原子性）"></a>事务是逻辑上的一组操作，要么都执行，要么都不执行.具有ACID，4个特性（原子性）</h3><p>原子性： 事务是最小的执行单位，不允许分割。事务的原子性确保动作要么全部完成，要么完全不起作用；<br>一致性： 执行事务前后，数据保持一致；<br>隔离性： 并发访问数据库时，一个用户的事物不被其他事物所干扰，各并发事务之间数据库是独立的；<br>持久性:  一个事务被提交之后。它对数据库中数据的改变是持久的，即使数据库发生故障也不应该对其有任何影响行操作，也就是多个并发事物之间相互隔离。</p>
+<h3 id="Spring提供了事务管理接口："><a href="#Spring提供了事务管理接口：" class="headerlink" title="Spring提供了事务管理接口："></a>Spring提供了事务管理接口：</h3><p>PlatformTransactionManager： （平台）事务管理器<br>TransactionDefinition： 事务定义信息(事务隔离级别、传播行为、超时、只读、回滚规则)<br>TransactionStatus： 事务运行状态<br>参考文档<a href="https://juejin.im/post/5b00c52ef265da0b95276091" target="_blank" rel="noopener">Spring事务管理详解</a></p>
+<h2 id="介绍下redis"><a href="#介绍下redis" class="headerlink" title="介绍下redis"></a>介绍下redis</h2><p>redis是一个key-value存储系统。Redis使用单线程的IO复用模型。不过最近redis出了一个bug。Redis好处：速度快，支持丰富数据类型，string，list，set，sorted set，hash；支持事务。</p>
+<h2 id="谈一下java集合"><a href="#谈一下java集合" class="headerlink" title="谈一下java集合"></a>谈一下java集合</h2><pre><code>Collection下：
+    List
+        ArrayList
+LinkedList
+    Set
+        HashSet
+LinkedHashSet
+TreeSet
+    Queue
+Map
+HashMap
+LinkedHashMap
+TreeMap
+Vector
+Stack
+HashTable
+ConcurrentHashMap：ConcurrentHashMap是HashMap的线程安全版。同HashMap相比，ConcurrentHashMap不仅保证了访问的线程安全性，而且在效率上与HashTable相比，也有较大的提高。
+CopyOnWriteArrayList：是一个线程安全的List接口的实现，它使用了ReentrantLock锁来保证在并发情况下提供高性能的并发读取。</code></pre><h2 id="多线程有几种实现方法-都是什么-同步有几种实现方法-都是什么"><a href="#多线程有几种实现方法-都是什么-同步有几种实现方法-都是什么" class="headerlink" title="多线程有几种实现方法,都是什么?同步有几种实现方法,都是什么?"></a>多线程有几种实现方法,都是什么?同步有几种实现方法,都是什么?</h2><p>多线程有两种实现方法，分别是继承Thread类与实现Runnable接口同步的实现方面有两种，分别是synchronized,wait与notify</p>
+<h2 id="float型float-f-3-4是否正确"><a href="#float型float-f-3-4是否正确" class="headerlink" title="float型float f=3.4是否正确?"></a>float型float f=3.4是否正确?</h2><p>不正确。精度不准确,应该用强制类型转换，如下所示：float f=(float)3.4</p>
+<h2 id="STRING与STRINGBUFFER的区别。"><a href="#STRING与STRINGBUFFER的区别。" class="headerlink" title="STRING与STRINGBUFFER的区别。"></a>STRING与STRINGBUFFER的区别。</h2><p>STRING的长度是不可变的，STRINGBUFFER的长度是可变的。如果你对字符串中的内容经常进行操作，特别是内容要修改时，那么使用StringBuffer，如果最后需要String，那么使用StringBuffer的toString()方法</p>
+<h2 id="EJB与JAVA-BEAN的区别？"><a href="#EJB与JAVA-BEAN的区别？" class="headerlink" title="EJB与JAVA BEAN的区别？"></a>EJB与JAVA BEAN的区别？</h2><p>Java Bean 是可复用的组件，对Java Bean并没有严格的规范，理论上讲，任何一个Java类都可以是一个Bean。但通常情况下，由于Java Bean是被容器所创建（如Tomcat)的，所以Java Bean应具有一个无参的构造器，另外，通常Java Bean还要实现Serializable接口用于实现Bean的持久性。Java Bean实际上相当于微软COM模型中的本地进程内COM组件，它是不能被跨进程访问的。Enterprise Java Bean 相当于DCOM，即分布式组件。它是基于Java的远程方法调用（RMI）技术的，所以EJB可以被远程访问（跨进程、跨计算机）。但EJB必须被布署在诸如Webspere、WebLogic这样的容器中，EJB客户从不直接访问真正的EJB组件，而是通过其容器访问。EJB容器是EJB组件的代理，EJB组件由容器所创建和管理。客户通过容器来访问真正的EJB组件。</p>
+<h2 id="java中有几种方法可以实现一个线程？用什么关键字修饰同步方法-stop-和suspend-方法为何不推荐使用？"><a href="#java中有几种方法可以实现一个线程？用什么关键字修饰同步方法-stop-和suspend-方法为何不推荐使用？" class="headerlink" title="java中有几种方法可以实现一个线程？用什么关键字修饰同步方法? stop()和suspend()方法为何不推荐使用？"></a>java中有几种方法可以实现一个线程？用什么关键字修饰同步方法? stop()和suspend()方法为何不推荐使用？</h2><p>有两种实现方法，分别是继承Thread类与实现Runnable接口<br>用synchronized关键字修饰同步方法<br>反对使用stop()，是因为它不安全。它会解除由线程获取的所有锁定，而且如果对象处于一种不连贯状态，那么其他线程能在那种状态下检查和修改它们。结果很难检查出真正的问题所在。suspend()方法容易发生死锁。调用suspend()的时候，目标线程会停下来，但却仍然持有在这之前获得的锁定。此时，其他任何线程都不能访问锁定的资源，除非被”挂起”的线程恢复运行。对任何线程来说，如果它们想恢复目标线程，同时又试图使用任何一个锁定的资源，就会造成死锁。所以不应该使用suspend()，而应在自己的Thread类中置入一个标志，指出线程应该活动还是挂起。若标志指出线程应该挂起，便用wait()命其进入等待状态。若标志指出线程应当恢复，则用一个notify()重新启动线程。</p>
+<h2 id="sleep-和-wait-有什么区别"><a href="#sleep-和-wait-有什么区别" class="headerlink" title="sleep() 和 wait() 有什么区别?"></a>sleep() 和 wait() 有什么区别?</h2><p>sleep是线程类（Thread）的方法，导致此线程暂停执行指定时间，给执行机会给其他线程，但是监控状态依然保持，到时后会自动恢复。调用sleep不会释放对象锁。<br>wait是Object类的方法，对此对象调用wait方法导致本线程放弃对象锁，进入等待此对象的等待锁定池，只有针对此对象发出notify方法（或notifyAll）后本线程才进入对象锁定池准备获得对象锁进入运行状态。</p>
+<h2 id="同步和异步有何异同，在什么情况下分别使用他们？举例说明。"><a href="#同步和异步有何异同，在什么情况下分别使用他们？举例说明。" class="headerlink" title="同步和异步有何异同，在什么情况下分别使用他们？举例说明。"></a>同步和异步有何异同，在什么情况下分别使用他们？举例说明。</h2><p>如果数据将在线程间共享。例如正在写的数据以后可能被另一个线程读到，或者正在读的数据可能已经被另一个线程写过了，那么这些数据就是共享数据，必须进行同步存取。<br>当应用程序在对象上调用了一个需要花费很长时间来执行的方法，并且不希望让程序等待方法的返回时，就应该使用异步编程，在很多情况下采用异步途径往往更有效率。</p>
+<h2 id="启动一个线程是用run-还是start"><a href="#启动一个线程是用run-还是start" class="headerlink" title="启动一个线程是用run()还是start()?"></a>启动一个线程是用run()还是start()?</h2><p>启动一个线程是调用start()方法，使线程所代表的虚拟处理机处于可运行状态，这意味着它可以由JVM调度并执行。这并不意味着线程就会立即运行。run()方法可以产生必须退出的标志来停止一个线程。</p>
+<h2 id="当一个线程进入一个对象的一个synchronized方法后，其它线程是否可进入此对象的其它方法"><a href="#当一个线程进入一个对象的一个synchronized方法后，其它线程是否可进入此对象的其它方法" class="headerlink" title="当一个线程进入一个对象的一个synchronized方法后，其它线程是否可进入此对象的其它方法?"></a>当一个线程进入一个对象的一个synchronized方法后，其它线程是否可进入此对象的其它方法?</h2><p>不能，一个对象的一个synchronized方法只能由一个线程访问。</p>
+<h2 id="请说出你所知道的线程同步的方法。"><a href="#请说出你所知道的线程同步的方法。" class="headerlink" title="请说出你所知道的线程同步的方法。"></a>请说出你所知道的线程同步的方法。</h2><p>wait():使一个线程处于等待状态，并且释放所持有的对象的lock。<br>sleep():使一个正在运行的线程处于睡眠状态，是一个静态方法，调用此方法要捕捉InterruptedException异常。<br>notify():唤醒一个处于等待状态的线程，注意的是在调用此方法的时候，并不能确切的唤醒某一个等待状态的线程，而是由JVM确定唤醒哪个线程，而且不是按优先级。<br>Allnotity():唤醒所有处入等待状态的线程，注意并不是给所有唤醒线程一个对象的锁，而是让它们竞争。</p>
+<h2 id="左连接和右连接的区别"><a href="#左连接和右连接的区别" class="headerlink" title="左连接和右连接的区别"></a>左连接和右连接的区别</h2><p>左连接是基于左表，右连接是基于右表，inner join不是基于左表右表，只有符合的表才会显示</p>
+<h2 id="索引的作用？和它的优点缺点是什么？"><a href="#索引的作用？和它的优点缺点是什么？" class="headerlink" title="索引的作用？和它的优点缺点是什么？"></a>索引的作用？和它的优点缺点是什么？</h2><p>索引就一种特殊的查询表，数据库的搜索引擎可以利用它加速对数据的检索。它很类似与现实生活中书的目录，不需要查询整本书内容就可以找到想要的数据。索引可以是唯一的，创建索引允许指定单个列或者是多个列。缺点是它减慢了数据录入的速度，同时也增加了数据库的尺寸大小。</p>
+<h2 id="什么是锁？"><a href="#什么是锁？" class="headerlink" title="什么是锁？"></a>什么是锁？</h2><p>  锁：在所以的 DBMS中，锁是实现事务的关键，锁可以保证事务的完整性和并发性。与现实生活中锁一样，它可以使某些数据的拥有者，在某段时间内不能使用某些数据或数据结构。当然锁还分级别的。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/30/181128springboot%E5%88%9B%E5%BB%BA%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" rel="next" title="springboot创建微服务遇到的问题">
+                <i class="fa fa-chevron-left"></i> springboot创建微服务遇到的问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/19/180919%E6%B3%A8%E8%A7%A3annotation/" rel="prev" title="注解annotation">
+                注解annotation <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Bobex</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/%20%7C%7C%20archive">
+                
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#说一下spring。"><span class="nav-number">1.</span> <span class="nav-text">说一下spring。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#说一下分布式。"><span class="nav-number">2.</span> <span class="nav-text">说一下分布式。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Springbean是怎么创建的？"><span class="nav-number">3.</span> <span class="nav-text">Springbean是怎么创建的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#springMVC的执行流程是什么样的？"><span class="nav-number">4.</span> <span class="nav-text">springMVC的执行流程是什么样的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#说一下Ajax。"><span class="nav-number">5.</span> <span class="nav-text">说一下Ajax。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#说一下AOP"><span class="nav-number">6.</span> <span class="nav-text">说一下AOP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事物的理解"><span class="nav-number">7.</span> <span class="nav-text">事物的理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#事务是逻辑上的一组操作，要么都执行，要么都不执行-具有ACID，4个特性（原子性）"><span class="nav-number">7.1.</span> <span class="nav-text">事务是逻辑上的一组操作，要么都执行，要么都不执行.具有ACID，4个特性（原子性）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring提供了事务管理接口："><span class="nav-number">7.2.</span> <span class="nav-text">Spring提供了事务管理接口：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍下redis"><span class="nav-number">8.</span> <span class="nav-text">介绍下redis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谈一下java集合"><span class="nav-number">9.</span> <span class="nav-text">谈一下java集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程有几种实现方法-都是什么-同步有几种实现方法-都是什么"><span class="nav-number">10.</span> <span class="nav-text">多线程有几种实现方法,都是什么?同步有几种实现方法,都是什么?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#float型float-f-3-4是否正确"><span class="nav-number">11.</span> <span class="nav-text">float型float f&#x3D;3.4是否正确?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#STRING与STRINGBUFFER的区别。"><span class="nav-number">12.</span> <span class="nav-text">STRING与STRINGBUFFER的区别。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EJB与JAVA-BEAN的区别？"><span class="nav-number">13.</span> <span class="nav-text">EJB与JAVA BEAN的区别？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java中有几种方法可以实现一个线程？用什么关键字修饰同步方法-stop-和suspend-方法为何不推荐使用？"><span class="nav-number">14.</span> <span class="nav-text">java中有几种方法可以实现一个线程？用什么关键字修饰同步方法? stop()和suspend()方法为何不推荐使用？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sleep-和-wait-有什么区别"><span class="nav-number">15.</span> <span class="nav-text">sleep() 和 wait() 有什么区别?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步和异步有何异同，在什么情况下分别使用他们？举例说明。"><span class="nav-number">16.</span> <span class="nav-text">同步和异步有何异同，在什么情况下分别使用他们？举例说明。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动一个线程是用run-还是start"><span class="nav-number">17.</span> <span class="nav-text">启动一个线程是用run()还是start()?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#当一个线程进入一个对象的一个synchronized方法后，其它线程是否可进入此对象的其它方法"><span class="nav-number">18.</span> <span class="nav-text">当一个线程进入一个对象的一个synchronized方法后，其它线程是否可进入此对象的其它方法?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请说出你所知道的线程同步的方法。"><span class="nav-number">19.</span> <span class="nav-text">请说出你所知道的线程同步的方法。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#左连接和右连接的区别"><span class="nav-number">20.</span> <span class="nav-text">左连接和右连接的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引的作用？和它的优点缺点是什么？"><span class="nav-number">21.</span> <span class="nav-text">索引的作用？和它的优点缺点是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是锁？"><span class="nav-number">22.</span> <span class="nav-text">什么是锁？</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Bobex</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v4.2.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'L6VipXjUCOYPwUBu3GH6oj5R-MdYXbMMI',
+        appKey: 'Jsdet4tQjNPviDhkH2OicPty',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: false
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
